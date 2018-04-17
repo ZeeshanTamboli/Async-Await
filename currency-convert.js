@@ -14,18 +14,31 @@ const getCountries = currencyCode => {
     });
 };
 
-const convertCurrency = (from, to, amount) => {
-  let countries;
-  return getCountries(to).then(tempCountries => {
-    countries = tempCountries;
-    return getExchangeRate(from, to).then(rate => {
-      const exchangedAmount = rate * amount;
+// const convertCurrency = (from, to, amount) => {
+//   let countries;
+//   return getCountries(to).then(tempCountries => {
+//     countries = tempCountries;
+//     return getExchangeRate(from, to).then(rate => {
+//       const exchangedAmount = rate * amount;
 
-      return `${amount} ${from} is worth ${exchangedAmount} ${to}. ${to} can be used in the following countries: ${countries.join(
-        ', '
-      )}`;
-    });
-  });
+//       return `${amount} ${from} is worth ${exchangedAmount} ${to}. ${to} can be used in the following countries: ${countries.join(
+//         ', '
+//       )}`;
+//     });
+//   });
+// };
+
+const convertCurrencyAlt = async (from, to, amount) => {
+  const countries = await getCountries(to);
+  const rate = await getExchangeRate(from, to);
+
+  const exchangedAmount = rate * amount;
+
+  return `${amount} ${from} is worth ${exchangedAmount} ${to}. ${to} can be used in the following countries: ${countries.join(
+    ', '
+  )}`;
 };
 
-convertCurrency('USD', 'INR', 100).then(status => console.log(status));
+convertCurrencyAlt('USD', 'INR', 2)
+  .then(status => console.log(status))
+  .catch(e => console.log(e));
